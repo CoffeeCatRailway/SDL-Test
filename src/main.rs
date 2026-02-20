@@ -5,7 +5,8 @@ use std::path::Path;
 use sdl3::event::Event;
 use sdl3::gpu::{BufferRegion, BufferUsageFlags, ColorTargetDescription, ColorTargetInfo, Device, GraphicsPipelineTargetInfo, LoadOp, PrimitiveType, ShaderFormat, ShaderStage, StorageBufferReadWriteBinding, StoreOp, TransferBufferLocation, TransferBufferUsage};
 use sdl3::keyboard::Keycode;
-use sdl3::pixels::Color;
+use sdl3::pixels::{Color, FColor};
+use sdl3::render::{FPoint, Vertex, VertexIndices};
 use sdl3::timer;
 use shaderc::ShaderKind;
 
@@ -42,7 +43,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let sdl = sdl3::init()?;
 	let video = sdl.video()?;
 	
-	let title = "rust-sdl2 demo: Video";
+	let title = "SDL3 Test";
 	let window = video.window(title, 800, 600)
 		.position_centered()
 		.resizable()
@@ -66,7 +67,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 		let mut map = upload.map::<Particle>(&device, true);
 		map.mem_mut().copy_from_slice(&particles);
 		map.unmap();
-		
+	
 		let copyCmd = device.acquire_command_buffer()?;
 		let copyPass = device.begin_copy_pass(&copyCmd)?;
 		copyPass.upload_to_gpu_buffer(
@@ -143,11 +144,11 @@ fn main() -> Result<(), Box<dyn Error>> {
 				.with_store_op(StoreOp::STORE)
 				.with_clear_color(Color::RGB(10, 10, 30));
 			let pass = device.begin_render_pass(&drawCmd, &[colorTarget], None)?;
-			
+		
 			pass.bind_graphics_pipeline(&pipeline);
 			pass.bind_vertex_storage_buffers(0, &[particleBuffer.clone()]);
 			pass.draw_primitives(PARTICLE_COUNT as usize, 1, 0, 0);
-			
+		
 			device.end_render_pass(pass);
 			drawCmd.submit()?;
 		} else {
@@ -158,7 +159,41 @@ fn main() -> Result<(), Box<dyn Error>> {
 		// canvas.clear();
 		//
 		// canvas.set_draw_color(Color::GREEN);
-		// canvas.draw_line(sdl3::rect::Point::new(0, 0), sdl3::rect::Point::new(800, 600))?;
+		// // canvas.draw_line(sdl3::rect::Point::new(0, 0), sdl3::rect::Point::new(800, 600))?;
+		// let vertices = [
+		// 	Vertex {
+		// 		position: FPoint::new(200.0, 150.0),
+		// 		color: FColor::RED,
+		// 		tex_coord: FPoint::new(0.0, 0.0),
+		// 	},
+		// 	Vertex {
+		// 		position: FPoint::new(600.0, 150.0),
+		// 		color: FColor::GREEN,
+		// 		tex_coord: FPoint::new(0.0, 0.0),
+		// 	},
+		// 	Vertex {
+		// 		position: FPoint::new(600.0, 450.0),
+		// 		color: FColor::BLUE,
+		// 		tex_coord: FPoint::new(0.0, 0.0),
+		// 	},
+		//
+		// 	Vertex {
+		// 		position: FPoint::new(600.0, 450.0),
+		// 		color: FColor::BLUE,
+		// 		tex_coord: FPoint::new(0.0, 0.0),
+		// 	},
+		// 	Vertex {
+		// 		position: FPoint::new(200.0, 450.0),
+		// 		color: FColor::BLACK,
+		// 		tex_coord: FPoint::new(0.0, 0.0),
+		// 	},
+		// 	Vertex {
+		// 		position: FPoint::new(200.0, 150.0),
+		// 		color: FColor::RED,
+		// 		tex_coord: FPoint::new(0.0, 0.0),
+		// 	},
+		// ];
+		// canvas.render_geometry(&vertices, None, VertexIndices::Sequential)?;
 		//
 		// canvas.present();
 		

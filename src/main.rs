@@ -135,14 +135,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 		computeCmd.submit()?;
 		
 		// render
-		// canvas.set_draw_color(Color::BLACK);
-		// canvas.clear();
-		//
-		// canvas.set_draw_color(Color::GREEN);
-		// canvas.draw_line(sdl3::rect::Point::new(0, 0), sdl3::rect::Point::new(800, 600))?;
-		//
-		// canvas.present();
-		
 		let mut drawCmd = device.acquire_command_buffer()?;
 		if let Ok(swapchain) = drawCmd.wait_and_acquire_swapchain_texture(canvas.window()) {
 			let colorTarget = ColorTargetInfo::default()
@@ -161,6 +153,14 @@ fn main() -> Result<(), Box<dyn Error>> {
 		} else {
 			drawCmd.cancel();
 		}
+		
+		// canvas.set_draw_color(Color::BLACK);
+		// canvas.clear();
+		//
+		// canvas.set_draw_color(Color::GREEN);
+		// canvas.draw_line(sdl3::rect::Point::new(0, 0), sdl3::rect::Point::new(800, 600))?;
+		//
+		// canvas.present();
 		
 		// fps counter
 		fps += 1;

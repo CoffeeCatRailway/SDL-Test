@@ -14,6 +14,6 @@ layout(set = 0, binding = 0) readonly buffer Particles {
 void main() {
     vec2 pos = particles[gl_VertexIndex].pos.xy;
     gl_Position = vec4(pos, 0.0, 1.0);
-    gl_PointSize = 4.0;
+    gl_PointSize = 10.0;
     outColor = particles[gl_VertexIndex].color;
 }

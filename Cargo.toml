@@ -7,6 +7,10 @@ edition = "2024"
 sdl3 = { version = "0.17.3", features = ["build-from-source"] }
 glow = "0.16.0"
 glam = "0.32.0"
+bytemuck = { version = "1.25.0", features = ["derive"] }
 
-rand = "0.10.0"
-shaderc = "0.10.1"
+rand = { version = "0.10.0", features = ["log"] }
+
+tracing = { version = "0.1.44", features = ["log"] }
+tracing-subscriber = "0.3.22"
+log = "0.4.29"

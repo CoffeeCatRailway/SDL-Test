@@ -7,13 +7,13 @@ struct Particle {
     vec4 color;
 };
 
-layout(set = 0, binding = 0) readonly buffer Particles {
+layout(shared, binding = 0) readonly buffer Particles {
     Particle particles[];
 };
 
 void main() {
-    vec2 pos = particles[gl_VertexIndex].pos.xy;
+    vec2 pos = particles[gl_VertexID].pos.xy;
     gl_Position = vec4(pos, 0.0, 1.0);
     gl_PointSize = 10.0;
-    outColor = particles[gl_VertexIndex].color;
+    outColor = particles[gl_VertexID].color;
 }

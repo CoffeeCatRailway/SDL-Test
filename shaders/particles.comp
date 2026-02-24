@@ -7,7 +7,7 @@ struct Particle {
     vec4 color;
 };
 
-layout(set = 1, binding = 0) buffer Particles {
+layout(shared, binding = 0) buffer Particles {
     Particle particles[];
 };
 

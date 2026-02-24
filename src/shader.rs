@@ -3,7 +3,7 @@
 
 use std::sync::Arc;
 use glow::{HasContext, Program};
-use log::{error, info, warn};
+use tracing::{error, info, warn};
 
 type GlowShader = glow::Shader;
 

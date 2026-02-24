@@ -5,7 +5,7 @@ mod shader;
 use std::error::Error;
 use std::sync::Arc;
 use glow::HasContext;
-use log::info;
+use tracing::info;
 use sdl3::event::{Event, WindowEvent};
 use sdl3::keyboard::Keycode;
 use sdl3::timer;
@@ -32,6 +32,40 @@ struct Particle {
 
 fn rand01() -> f32 {
 	rand::rng().random()
+}
+
+fn initializeTracing() -> Result<(), Box<dyn Error>> {
+	use std::fs::File;
+	use tracing_subscriber::{fmt, filter, prelude::*};
+	
+	// console
+	let stdoutLog = fmt::layer()
+		.with_ansi(true)
+		.with_target(false)
+		.with_file(true)
+		.with_line_number(true)
+		.with_thread_names(true)
+		.with_thread_ids(false)
+		.with_filter(filter::LevelFilter::INFO);
+	
+	// file
+	let file = File::create("debug.log")?;
+	let fileLog = fmt::layer()
+		.with_writer(Arc::new(file))
+		.with_ansi(false)
+		.with_target(true)
+		.with_file(true)
+		.with_line_number(true)
+		.with_thread_names(true)
+		.with_thread_ids(true)
+		.with_filter(filter::LevelFilter::DEBUG);
+	
+	// combine
+	tracing_subscriber::registry().with(stdoutLog).with(fileLog).init();
+	
+	info!("Hello, world!");
+	// panic!("hi");
+	Ok(())
 }
 
 fn createSdl3Context(title: &str) -> Result<(
@@ -71,22 +105,9 @@ fn createSdl3Context(title: &str) -> Result<(
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-	tracing_subscriber::fmt::fmt()
-		// .with_writer(Arc::new(file))
-		.with_ansi(true)
-		.with_target(false)
-		.with_file(true)
-		.with_line_number(true)
-		.with_thread_names(true)
-		.with_thread_ids(false)
-		.compact()
-		.with_max_level(tracing::Level::INFO)
-		.init();
-	
-	info!("Hello, world!");
-	// panic!("hi");
-	
 	// initialize
+	initializeTracing()?;
+	
 	let title = "SDL3-Glow Test";
 	let (gl, mut window, mut eventLoop, _glContext) = createSdl3Context(title)?;
 	let gl = Arc::new(gl);
